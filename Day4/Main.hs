@@ -39,7 +39,7 @@ part2 = uncurry (*)
   . dropWhile (not . isBoardWin . fst)
   . (\(i,rest)-> map (first (!!i)) rest) -- index into just that board for the remaining rounds
   . (sum . zipWith (*) [0..] . map (fromEnum . not . isBoardWin) . fst . head &&& id) -- find the index of the board that hasn't won yet
-  . dropWhile ((>1) . sum . map (fromEnum . not . isBoanot . isBoardWin) . fst) -- drop until only one board hasn't won yet
+  . dropWhile ((>1) . sum . map (fromEnum . not . isBoardWin) . fst) -- drop until only one board hasn't won yet
   . generateGame
 
 main :: IO ()
