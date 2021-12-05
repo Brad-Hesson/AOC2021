@@ -1,14 +1,15 @@
 module Day1.Main where
 
 import Control.Arrow ((&&&))
+import Control.Monad
 
-depthsFromFile :: String -> IO [Int]
-depthsFromFile path = return . map read . lines =<< readFile path
+depthsFromFile :: FilePath -> IO [Int]
+depthsFromFile = return . map read . lines <=< readFile
 
 movingSum :: Int -> [Int] -> [Int]
 movingSum n l
   | n > length l = []
-  | otherwise = sum (take n l) : movingSum n (tail l)
+  | otherwise    = sum (take n l) : movingSum n (tail l)
 
 main :: IO ()
 main = do
