@@ -33,7 +33,7 @@ part1 = uncurry (*)
   . generateGame
 
 argWhere :: (a -> Bool) -> [a] -> [Int]
-argWhere pred = map (flip (-) 1) . snd . partition (==0) . zipWith (*) [1..] . map (fromEnum . pred)
+argWhere pred = map fst . filter snd . zipWith (,) [0..] . map pred
 
 part2 :: ([Board], [Int]) -> Int
 part2 = uncurry (*)
