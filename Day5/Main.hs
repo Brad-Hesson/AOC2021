@@ -11,12 +11,11 @@ data Line = Line {x1 :: Int, y1 :: Int, x2 :: Int, y2 :: Int}
 
 type TrailMap = M.Map (Int,Int) Int
 
+splitBy :: (a -> Bool) -> [a] -> [[a]]
+splitBy f = filter (not . f . head) . groupBy (curry $ uncurry (==) . (f***f))
+
 parseLine :: String -> Line
-parseLine s = Line x1 y1 x2 y2 where
-  [x1,y1,x2,y2] = map read
-    . filter (isNumber . head)
-    . groupBy (curry $ uncurry (==) . (isNumber***isNumber))
-    $ s
+parseLine s = Line x1 y1 x2 y2 where [x1,y1,x2,y2] = map read . splitBy (`elem` ", ->") $ s
 
 linesFromFile :: FilePath -> IO [Line]
 linesFromFile = return . map parseLine . lines <=< readFile

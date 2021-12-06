@@ -6,14 +6,17 @@ import Control.Monad
 
 type Board = [[Int]]
 
+splitBy :: (a -> Bool) -> [a] -> [[a]]
+splitBy f = filter (not . f . head) . groupBy (curry $ uncurry (==) . (f***f))
+
 dataFromFile :: FilePath -> IO ([Board], [Int])
 dataFromFile = return . (parseBoards . tail &&& parseNumbers . head) . lines <=< readFile
 
 parseNumbers :: String -> [Int]
-parseNumbers = map read . filter (/=",") . groupBy (\a b-> (a==',') == (b==','))
+parseNumbers = map read . splitBy (==',')
 
 parseBoards :: [String] -> [Board]
-parseBoards = map (map (map read . words)) . filter (/=[""]) . groupBy (\a b-> (a=="") == (b==""))
+parseBoards = map (map (map read . words)) . splitBy (=="")
 
 updateBoards :: Int -> [Board] -> [Board]
 updateBoards n = map (map (map (\x->if x==n then 0 else x)))
