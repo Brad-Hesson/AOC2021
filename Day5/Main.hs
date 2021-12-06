@@ -22,11 +22,11 @@ linesFromFile :: FilePath -> IO [Line]
 linesFromFile = return . map parseLine . lines <=< readFile
 
 lineToTrailMap :: Line -> TrailMap
-lineToTrailMap (Line x1 y1 x2 y2)
-  | x1 == x2  = M.fromList . map (flip (,) 1) $ [(x1,y) | y <- ys]
-  | y1 == y2  = M.fromList . map (flip (,) 1) $ [(x,y1) | x <- xs]
-  | otherwise = M.fromList . map (flip (,) 1) $ zipWith (,) xs ys
-  where
+lineToTrailMap (Line x1 y1 x2 y2) = M.fromList . map (flip (,) 1) $ coords where
+    coords
+      | x1 == x2  = [(x1,y) | y <- ys]
+      | y1 == y2  = [(x,y1) | x <- xs]
+      | otherwise = zipWith (,) xs ys
     xs = [x1,(x1 + signum (x2-x1))..x2]
     ys = [y1,(y1 + signum (y2-y1))..y2]
 
