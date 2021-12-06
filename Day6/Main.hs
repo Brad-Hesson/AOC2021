@@ -19,8 +19,11 @@ fishFromFile = return
   . map read
   . splitBy (==',') <=< readFile
 
+rotateLeft1 :: [a] -> [a]
+rotateLeft1 = liftM2 (++) tail (singleton . head)
+
 nextGen :: FishGen -> FishGen
-nextGen = uncurry (++) . second (\[a6,a7,a8]-> [a6+a8,a7,a8]) . splitAt 6 . liftM2 (++) tail (singleton . head)
+nextGen = uncurry (++) . second (\[a6,a7,a8]-> [a6+a8,a7,a8]) . splitAt 6 . rotateLeft1
 
 part1 :: [Int] -> Int
 part1 = sum . head . drop 80 . iterate nextGen
