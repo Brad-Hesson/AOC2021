@@ -35,11 +35,9 @@ part1 = uncurry (*)
 part2 :: ([Board], [Int]) -> Int
 part2 = uncurry (*)
   . first (sum . concat)
-  . head
-  . dropWhile (not . isBoardWin . fst)
-  . (\(i,rest)-> map (first (!!i)) rest) -- index into just that board for the remaining rounds
-  . (sum . zipWith (*) [0..] . map (fromEnum . not . isBoardWin) . fst . head &&& id) -- find the index of the board that hasn't won yet
-  . dropWhile ((>1) . sum . map (fromEnum . not . isBoardWin) . fst) -- drop until only one board hasn't won yet
+  . (\(i,(bs,n))-> (bs!!i,n))
+  . (sum . zipWith (*) [0..] . map (fromEnum . not . isBoardWin) . fst . last *** head)
+  . span (or . map (not . isBoardWin) . fst)
   . generateGame
 
 main :: IO ()
