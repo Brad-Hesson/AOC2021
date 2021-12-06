@@ -32,11 +32,14 @@ part1 = uncurry (*)
   . dropWhile (and . map (not . isBoardWin) . fst)
   . generateGame
 
+argWhere :: (a -> Bool) -> [a] -> [Int]
+argWhere pred = map (flip (-) 1) . snd . partition (==0) . zipWith (*) [1..] . map (fromEnum . pred)
+
 part2 :: ([Board], [Int]) -> Int
 part2 = uncurry (*)
   . first (sum . concat)
   . (\(i,(bs,n))-> (bs!!i,n))
-  . (sum . zipWith (*) [0..] . map (fromEnum . not . isBoardWin) . fst . last *** head)
+  . (head . argWhere (not . isBoardWin) . fst . last *** head)
   . span (or . map (not . isBoardWin) . fst)
   . generateGame
 
