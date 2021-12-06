@@ -1,2 +1,5 @@
 replit.nix
 .replit
+*.hi
+*.o
+*.prof
