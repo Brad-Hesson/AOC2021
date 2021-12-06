@@ -23,12 +23,12 @@ linesFromFile = return . map parseLine . lines <=< readFile
 
 lineToTrailMap :: Line -> TrailMap
 lineToTrailMap (Line x1 y1 x2 y2)
-  | x1 == x2 = M.fromList . map (flip (,) 1) $ [(x1,y) | y <- ys]
-  | y1 == y2 = M.fromList . map (flip (,) 1) $ [(x,y1) | x <- xs]
+  | x1 == x2  = M.fromList . map (flip (,) 1) $ [(x1,y) | y <- ys]
+  | y1 == y2  = M.fromList . map (flip (,) 1) $ [(x,y1) | x <- xs]
   | otherwise = M.fromList . map (flip (,) 1) $ zipWith (,) xs ys
   where
-    xs = nub ([x1..x2]++[x1,(x1-1)..x2])
-    ys = nub ([y1..y2]++[y1,(y1-1)..y2])
+    xs = [x1,(x1 + signum (x2-x1))..x2]
+    ys = [y1,(y1 + signum (y2-y1))..y2]
 
 part1 :: [Line] -> Int
 part1 = length . M.filter (>1) . M.unionsWith (+) . map (lineToTrailMap) . filter (\(Line x1 y1 x2 y2)-> x1==x2||y1==y2)
