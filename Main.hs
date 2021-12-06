@@ -3,26 +3,22 @@ import qualified Day2.Main as D2
 import qualified Day3.Main as D3
 import qualified Day4.Main as D4
 import qualified Day5.Main as D5
+import qualified Day6.Main as D6
 
-main = do
-  putStrLn "[ Day 1 ]"
-  D1.main
-  putStrLn ""
-  
-  putStrLn "[ Day 2 ]"
-  D2.main
-  putStrLn ""
+days = [
+  --(D1.main,1),
+  --(D2.main,2),
+  --(D3.main,3),
+  --(D4.main,4),
+  --(D5.main,5),
+  (D6.main,6)
+  ]
 
-  putStrLn "[ Day 3 ]"
-  D3.main
-  putStrLn ""
-
-  putStrLn "[ Day 4 ]"
-  D4.main
-  putStrLn ""
-
-  putStrLn "[ Day 5 ]"
-  D5.main
-  putStrLn ""
-  
-  return ()
+main :: IO ()
+main = mapM_ (\(f,n)-> do {
+    putStr "[ Day ";
+    putStr . show $ n;
+    putStrLn " ]";
+    f;
+    putStrLn ""
+  }) days
