@@ -21,7 +21,7 @@ linesFromFile :: FilePath -> IO [Line]
 linesFromFile = return . map parseLine . lines <=< readFile
 
 lineToTrailMap :: Line -> TrailMap
-lineToTrailMap (Line x1 y1 x2 y2) = M.fromList . map (flip (,) 1) $ coords where
+lineToTrailMap (Line x1 y1 x2 y2) = M.fromList . map (,1) $ coords where
     coords
       | x1 == x2  = [(x1,y) | y <- ys]
       | y1 == y2  = [(x,y1) | x <- xs]

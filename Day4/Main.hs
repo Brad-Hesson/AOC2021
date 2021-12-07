@@ -25,7 +25,7 @@ isBoardWin :: Board -> Bool
 isBoardWin = (0 `elem`) . map sum . uncurry (++) . (id &&& transpose)
 
 generateGame :: ([Board], [Int]) -> [([Board],Int)]
-generateGame = uncurry (scanl f) . (flip (,) 0 *** id) where
+generateGame = uncurry (scanl f) . ((,0) *** id) where
   f (bs,_) n = (updateBoards n bs,n)
 
 part1 :: ([Board], [Int]) -> Int
