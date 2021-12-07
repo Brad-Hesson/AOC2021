@@ -6,21 +6,24 @@ import qualified Day5.Main as D5
 import qualified Day6.Main as D6
 import qualified Day7.Main as D7
 
-days = [
-  (D1.main,1),
-  (D2.main,2),
-  (D3.main,3),
-  (D4.main,4),
-  (D5.main,5),
-  (D6.main,6),
-  (D7.main,7)
+days =
+  [ (D1.main, 1),
+    (D2.main, 2),
+    (D3.main, 3),
+    (D4.main, 4),
+    (D5.main, 5),
+    (D6.main, 6),
+    (D7.main, 7)
   ]
 
 main :: IO ()
-main = mapM_ (\(f,n)-> do {
-    putStr "[ Day ";
-    putStr . show $ n;
-    putStrLn " ]";
-    f;
-    putStrLn ""
-  }) days
+main =
+  mapM_
+    ( \(f, n) -> do
+        putStr "[ Day "
+        putStr . show $ n
+        putStrLn " ]"
+        f
+        putStrLn ""
+    )
+    days

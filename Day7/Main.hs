@@ -5,13 +5,13 @@ import Control.Monad
 import Data.List
 
 splitBy :: (a -> Bool) -> [a] -> [[a]]
-splitBy f = filter (not . f . head) . groupBy (curry $ uncurry (==) . (f***f))
+splitBy f = filter (not . f . head) . groupBy (curry $ uncurry (==) . (f *** f))
 
 positionsFromFile :: FilePath -> IO [Int]
-positionsFromFile = return . map read . splitBy (==',') <=< readFile
+positionsFromFile = return . map read . splitBy (== ',') <=< readFile
 
 layoutPositions :: [Int] -> [Int]
-layoutPositions = map (subtract 1 . length) . group . sort . uncurry (++) . ((\(a,b)->[a..b]) . (minimum &&& maximum) &&& id)
+layoutPositions = map (subtract 1 . length) . group . sort . uncurry (++) . ((\(a, b) -> [a .. b]) . (minimum &&& maximum) &&& id)
 
 rightwardCost :: [Int] -> [Int]
 rightwardCost = init . scanl (+) 0 . scanl1 (+)
@@ -31,6 +31,6 @@ part2 = minimum . biDirCostWith rightwardCost2 . layoutPositions
 main = do
   pos_s <- positionsFromFile "Day7/input.txt"
   putStr "Part 1: "
-  print $ part1 pos_s  
+  print $ part1 pos_s
   putStr "Part 2: "
   print $ part2 pos_s

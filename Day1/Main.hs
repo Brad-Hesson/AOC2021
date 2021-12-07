@@ -9,7 +9,7 @@ depthsFromFile = return . map read . lines <=< readFile
 movingSum :: Int -> [Int] -> [Int]
 movingSum n l
   | n > length l = []
-  | otherwise    = sum (take n l) : movingSum n (tail l)
+  | otherwise = sum (take n l) : movingSum n (tail l)
 
 main :: IO ()
 main = do
