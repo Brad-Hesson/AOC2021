@@ -3,3 +3,4 @@ replit.nix
 *.hi
 *.o
 *.prof
+*.exe

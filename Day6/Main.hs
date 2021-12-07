@@ -11,7 +11,7 @@ splitBy :: (a -> Bool) -> [a] -> [[a]]
 splitBy f = filter (not . f . head) . groupBy (curry $ uncurry (==) . (f***f))
 
 fishFromFile :: FilePath -> IO FishGen
-fishFromFile = return . map ((flip (-) 1) . length) . group . sort . (++) [0..8] . map read . splitBy (==',') <=< readFile
+fishFromFile = return . map (subtract 1 . length) . group . sort . (++) [0..8] . map read . splitBy (==',') <=< readFile
 
 rotateLeft1 :: [a] -> [a]
 rotateLeft1 = liftM2 (++) tail (singleton . head)
