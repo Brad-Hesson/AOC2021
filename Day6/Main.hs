@@ -22,10 +22,10 @@ nextGen = uncurry (++) . second (\[a6,a7,a8]-> [a6+a8,a7,a8]) . splitAt 6 . rota
 genPop :: Int -> FishGen -> Int
 genPop n = sum . head . drop n . iterate nextGen
 
-part1 :: [Int] -> Int
+part1 :: FishGen -> Int
 part1 = genPop 80
 
-part2 :: [Int] -> Int
+part2 :: FishGen -> Int
 part2 = genPop 256
 
 main = do
