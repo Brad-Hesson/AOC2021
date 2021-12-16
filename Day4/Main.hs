@@ -2,14 +2,12 @@
 
 module Day4.Main where
 
-import Control.Arrow
-import Control.Monad
-import Data.List
+import Common (splitBy)
+import Control.Arrow (Arrow (first, (&&&), (***)))
+import Control.Monad ((<=<))
+import Data.List (transpose)
 
 type Board = [[Int]]
-
-splitBy :: (a -> Bool) -> [a] -> [[a]]
-splitBy f = filter (not . f . head) . groupBy (curry $ uncurry (==) . (f *** f))
 
 dataFromFile :: FilePath -> IO ([Board], [Int])
 dataFromFile = return . (parseBoards . tail &&& parseNumbers . head) . lines <=< readFile

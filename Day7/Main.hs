@@ -1,11 +1,9 @@
 module Day7.Main where
 
-import Control.Arrow
-import Control.Monad
-import Data.List
-
-splitBy :: (a -> Bool) -> [a] -> [[a]]
-splitBy f = filter (not . f . head) . groupBy (curry $ uncurry (==) . (f *** f))
+import Common (splitBy)
+import Control.Arrow (Arrow ((&&&)))
+import Control.Monad ((<=<))
+import Data.List (group, sort)
 
 positionsFromFile :: FilePath -> IO [Int]
 positionsFromFile = return . map read . splitBy (== ',') <=< readFile

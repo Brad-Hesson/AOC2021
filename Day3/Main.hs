@@ -1,8 +1,8 @@
 module Day3.Main where
 
-import Control.Arrow
-import Control.Monad
-import Data.List
+import Control.Arrow (Arrow ((&&&)))
+import Control.Monad ((<=<))
+import Data.List (group, sort, sortOn, transpose)
 
 type Bin = [Bool]
 

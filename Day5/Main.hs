@@ -1,19 +1,15 @@
 {-# LANGUAGE TupleSections #-}
+
 module Day5.Main where
 
-import Control.Arrow
-import Control.Monad
-import Data.Char
-import Data.List
+import Common (splitBy)
+import Control.Monad ((<=<))
 import qualified Data.Map.Strict as M
 
 data Line = Line {x1 :: Int, y1 :: Int, x2 :: Int, y2 :: Int}
   deriving (Show)
 
 type TrailMap = M.Map (Int, Int) Int
-
-splitBy :: (a -> Bool) -> [a] -> [[a]]
-splitBy f = filter (not . f . head) . groupBy (curry $ uncurry (==) . (f *** f))
 
 parseLine :: String -> Line
 parseLine s = Line x1 y1 x2 y2 where [x1, y1, x2, y2] = map read . splitBy (`elem` ", ->") $ s

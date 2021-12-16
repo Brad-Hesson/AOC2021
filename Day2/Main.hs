@@ -1,9 +1,8 @@
 module Day2.Main where
 
-import Control.Arrow
-import Control.Monad
-import Data.Char
-import Data.List
+import Control.Monad ((<=<))
+import Data.Char (isNumber)
+import Data.List (partition)
 
 data Move = F Int | D Int | U Int
   deriving (Show)

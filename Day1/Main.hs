@@ -1,7 +1,7 @@
 module Day1.Main where
 
-import Control.Arrow
-import Control.Monad
+import Control.Arrow (Arrow ((&&&)))
+import Control.Monad ((<=<))
 
 depthsFromFile :: FilePath -> IO [Int]
 depthsFromFile = return . map read . lines <=< readFile

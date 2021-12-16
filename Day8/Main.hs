@@ -12,9 +12,6 @@ type Digit = S.Set Char
 
 type SegMap = M.Map Char (S.Set Char)
 
-splitBy :: (a -> Bool) -> [a] -> [[a]]
-splitBy f = filter (not . f . head) . groupBy (curry $ uncurry (==) . (f *** f))
-
 parseInstance :: String -> Instance
 parseInstance = (map S.fromList . words *** map S.fromList . words . tail) . break (== '|')
 

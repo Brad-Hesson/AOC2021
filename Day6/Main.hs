@@ -1,26 +1,23 @@
 module Day6.Main where
 
-import Data.Char
-import Data.List
-import Control.Arrow
-import Control.Monad
+import Common (splitBy)
+import Control.Arrow (Arrow (second))
+import Control.Monad (liftM2, (<=<))
+import Data.List (group, singleton, sort)
 
 type FishGen = [Int]
 
-splitBy :: (a -> Bool) -> [a] -> [[a]]
-splitBy f = filter (not . f . head) . groupBy (curry $ uncurry (==) . (f***f))
-
 fishFromFile :: FilePath -> IO FishGen
-fishFromFile = return . map (subtract 1 . length) . group . sort . (++) [0..8] . map read . splitBy (==',') <=< readFile
+fishFromFile = return . map (subtract 1 . length) . group . sort . (++) [0 .. 8] . map read . splitBy (== ',') <=< readFile
 
 rotateLeft1 :: [a] -> [a]
 rotateLeft1 = liftM2 (++) tail (singleton . head)
 
 nextGen :: FishGen -> FishGen
-nextGen = uncurry (++) . second (\[a6,a7,a8]-> [a6+a8,a7,a8]) . splitAt 6 . rotateLeft1
+nextGen = uncurry (++) . second (\[a6, a7, a8] -> [a6 + a8, a7, a8]) . splitAt 6 . rotateLeft1
 
 genPop :: Int -> FishGen -> Int
-genPop n = sum . head . drop n . iterate nextGen
+genPop n = sum . (!! max 0 n) . iterate nextGen
 
 part1 :: FishGen -> Int
 part1 = genPop 80
