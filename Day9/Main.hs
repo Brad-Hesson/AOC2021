@@ -2,43 +2,48 @@ module Day9.Main where
 
 import Common (iterMaybe, mapF)
 import Control.Arrow (Arrow ((&&&)))
-import qualified Data.Array as A
+import Data.Array
+  ( Array,
+    Ix (inRange, range),
+    bounds,
+    listArray,
+    (!),
+  )
 import Data.Char (digitToInt, isNumber)
 import Data.List (group, partition, sort, sortOn)
 import Data.Maybe (isNothing, listToMaybe)
 
-data HeightMap = HeightMap (A.Array Int Int) Int Int
+type RC = (Int, Int)
 
-type XY = (Int, Int)
-
-idxHM :: HeightMap -> XY -> Int
-idxHM (HeightMap arr w h) (x, y) = arr A.! (x + w * y)
+type HeightMap = Array RC Int
 
 heightmapFromFile :: FilePath -> IO HeightMap
 heightmapFromFile fp = do
   raw <- readFile fp
-  let w = length . head . lines $ raw
-  let h = length . lines $ raw
+  let cs = length . head . lines $ raw
+  let rs = length . lines $ raw
   let arr = map digitToInt . fst . partition isNumber $ raw
-  return $ HeightMap (A.listArray (0, length arr - 1) arr) w h
+  return $ listArray ((1, 1), (rs, cs)) arr
 
-adjacents :: HeightMap -> XY -> [XY]
-adjacents (HeightMap _ w h) (x, y) = filter (and . mapF preds) [(x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)]
-  where
-    preds = [(>= 0) . fst, (>= 0) . snd, (< w) . fst, (< h) . snd]
+adjacents :: HeightMap -> RC -> [RC]
+adjacents hm =
+  let offsets (xi, yi) = [(x + xi, y + yi) | (x, y) <- [(1, 0), (-1, 0), (0, 1), (0, -1)]]
+   in filter (inRange $ bounds hm) . offsets
 
-nextLowest :: HeightMap -> XY -> Maybe XY
-nextLowest hm xy = fmap snd . listToMaybe . sortOn fst . filter ((idxHM hm xy >=) . fst) . map (idxHM hm &&& id) . adjacents hm $ xy
+nextLowest :: HeightMap -> RC -> Maybe RC
+nextLowest hm rc = fmap snd . listToMaybe . sortOn fst . filter ((hm ! rc >=) . fst) . map ((!) hm &&& id) . adjacents hm $ rc
 
 part1 :: HeightMap -> Int
-part1 hm@(HeightMap _ w h) =
+part1 hm =
   sum
-    . map ((+ 1) . idxHM hm)
+    . map ((+ 1) . (hm !))
     . filter (isNothing . nextLowest hm)
-    $ [(x, y) | x <- [0 .. w - 1], y <- [0 .. h - 1]]
+    . range
+    . bounds
+    $ hm
 
 part2 :: HeightMap -> Int
-part2 hm@(HeightMap _ w h) =
+part2 hm =
   product
     . take 3
     . sortOn negate
@@ -46,8 +51,10 @@ part2 hm@(HeightMap _ w h) =
     . group
     . sort
     . map (iterMaybe $ nextLowest hm)
-    . filter ((< 9) . idxHM hm)
-    $ [(x, y) | x <- [0 .. w - 1], y <- [0 .. h - 1]]
+    . filter ((< 9) . (hm !))
+    . range
+    . bounds
+    $ hm
 
 main :: IO ()
 main = do
