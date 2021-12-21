@@ -8,6 +8,7 @@ import qualified Day7.Main as D7
 import qualified Day8.Main as D8
 import qualified Day9.Main as D9
 import qualified Day10.Main as D10
+import qualified Day11.Main as D11
 
 days =
   [ (D1.main, 1),
@@ -19,7 +20,8 @@ days =
     (D7.main, 7),
     (D8.main, 8),
     (D9.main, 9),
-    (D10.main, 10)
+    (D10.main, 10),
+    (D11.main, 11)
   ]
 
 main :: IO ()
