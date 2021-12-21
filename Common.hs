@@ -13,4 +13,7 @@ iterMaybe f a
   | otherwise = iterMaybe f . fromJust . f $ a
 
 splitBy :: (a -> Bool) -> [a] -> [[a]]
-splitBy f = filter (not . f . head) . groupBy (curry $ uncurry (==) . (f *** f))
+splitBy f = filter (not . f . head) . groupOn f
+
+groupOn :: Eq e => (a -> e) -> [a] -> [[a]]
+groupOn f = groupBy (curry $ uncurry (==) . (f *** f))
