@@ -1,8 +1,9 @@
 module Common where
 
-import Control.Arrow
-import Data.List
-import Data.Maybe
+import Control.Arrow (Arrow ((***)))
+import Data.Array (Array, bounds, elems)
+import Data.List (groupBy)
+import Data.Maybe (fromJust, isNothing)
 
 mapF :: [a -> b] -> a -> [b]
 mapF lfs = flip map lfs . flip ($)
@@ -21,3 +22,8 @@ groupOn f = groupBy (curry $ uncurry (==) . (f *** f))
 chop :: Int -> [a] -> [[a]]
 chop n [] = []
 chop n l = take n l : chop n (drop n l)
+
+print2DArray :: Show a => Array (Int, Int) a -> IO ()
+print2DArray mz =
+  let width = snd . snd . bounds $ mz
+   in putStrLn . unlines . map concat . chop width . map show . elems $ mz
