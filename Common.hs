@@ -1,6 +1,6 @@
 module Common where
 
-import Control.Arrow (Arrow ((***)))
+import Control.Arrow (Arrow ((&&&), (***)))
 import Data.Array (Array, bounds, elems)
 import Data.List (groupBy)
 import Data.Maybe (fromJust, isNothing)
@@ -25,5 +25,5 @@ chop n l = take n l : chop n (drop n l)
 
 print2DArray :: Show a => Array (Int, Int) a -> IO ()
 print2DArray mz =
-  let width = snd . snd . bounds $ mz
+  let width = (+1) . uncurry (-) . (snd . snd &&& snd . fst) . bounds $ mz
    in putStrLn . unlines . map concat . chop width . map show . elems $ mz
