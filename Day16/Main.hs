@@ -1,3 +1,5 @@
+{-# LANGUAGE TupleSections #-}
+
 module Day16.Main where
 
 import Control.Applicative (Alternative (empty, many, (<|>)))
@@ -7,9 +9,9 @@ import Data.Either (isRight)
 import Data.Functor ((<&>))
 import Numeric (readHex)
 
-type BitArray = [Bit]
-
 type Bit = Bool
+
+type BitArray = [Bit]
 
 data Packet
   = Literal {getVer :: Int, getVal :: Int}
@@ -34,14 +36,13 @@ newtype Parser a = Parser {parse :: BitArray -> Either BitArray (a, BitArray)}
 instance Functor Parser where fmap f (Parser p) = Parser $ fmap (first f) . p
 
 instance Applicative Parser where
-  pure a = Parser $ \ba -> Right (a, ba)
+  pure a = Parser $ Right . (a,)
   (Parser p1) <*> (Parser p2) = Parser $ \ba -> do
     (f, ba') <- p1 ba
     (a, ba'') <- p2 ba'
     return (f a, ba'')
 
 instance Monad Parser where
-  return = pure
   (Parser p1) >>= f = Parser $ \ba -> do
     (a, ba') <- p1 ba
     parse (f a) ba'
@@ -77,20 +78,20 @@ literalP = do
 operatorP :: Parser Packet
 operatorP = do
   ver <- binToDec <$> nBitsP 3
-  opID <- binToDec <$> nBitsP 3
+  op <- binToDec <$> nBitsP 3
   lenType <- oneBitP
   if lenType
     then do
       len <- binToDec <$> nBitsP 11
       ps <- replicateM len packetP
-      return $ Operator ver opID ps
+      return $ Operator ver op ps
     else do
       len <- binToDec <$> nBitsP 15
       bitarray <- nBitsP len
       let result = parse (many packetP) bitarray
       guard $ isRight result
       let Right (ps, _) = result
-      return $ Operator ver opID ps
+      return $ Operator ver op ps
 
 packetP :: Parser Packet
 packetP = literalP <|> operatorP <|> Parser Left
