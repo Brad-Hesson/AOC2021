@@ -1,10 +1,11 @@
 module Day16.Main where
 
-import Control.Applicative ( Alternative((<|>), empty, many) )
-import Control.Arrow ( Arrow(first) )
-import Control.Monad ( guard, replicateM )
-import Data.Either ( isRight )
-import Numeric ( readHex )
+import Control.Applicative (Alternative (empty, many, (<|>)))
+import Control.Arrow (Arrow (first))
+import Control.Monad (guard, replicateM)
+import Data.Either (isRight)
+import Data.Functor ((<&>))
+import Numeric (readHex)
 
 type BitArray = [Bit]
 
@@ -65,11 +66,13 @@ literalP = do
   ver <- binToDec <$> nBitsP 3
   op <- binToDec <$> nBitsP 3
   guard $ op == 4
-  Literal ver . binToDec <$> parseLiteral
+  Literal ver . binToDec <$> parseLiteralBits
   where
-    parseLiteral = do
+    parseLiteralBits = do
       continue <- oneBitP
-      if not continue then nBitsP 4 else ((++) <$> nBitsP 4) <*> parseLiteral
+      if not continue
+        then nBitsP 4
+        else (nBitsP 4 <&> (++)) <*> parseLiteralBits
 
 operatorP :: Parser Packet
 operatorP = do
