@@ -31,7 +31,7 @@ binToDec = sum . zipWith (*) (map (2 ^) [0 ..]) . reverse . map fromEnum
 decToBin :: Integer -> BitArray
 decToBin = reverse . map ((== 1) . (`mod` 2)) . takeWhile (/= 0) . iterate (`div` 2)
 
-newtype Parser a = Parser {parse :: BitArray -> Either BitArray (a, BitArray)}
+newtype Parser a = Parser {parse :: BitArray -> Either String (a, BitArray)}
 
 instance Functor Parser where fmap f (Parser p) = Parser $ fmap (first f) . p
 
@@ -48,14 +48,14 @@ instance Monad Parser where
     parse (f a) ba'
 
 instance Alternative Parser where
-  empty = Parser Left
+  empty = Parser $ const (Left "Error: Alternative Failed")
   p1 <|> p2 = Parser $ \ba -> case parse p1 ba of
     Left _ -> parse p2 ba
     Right res -> Right res
 
 oneBitP :: Parser Bit
 oneBitP =
-  let p [] = Left []
+  let p [] = Left "Error: EOF"
       p (b : bs) = Right (b, bs)
    in Parser p
 
@@ -94,7 +94,7 @@ operatorP = do
       return $ Operator ver op ps
 
 packetP :: Parser Packet
-packetP = literalP <|> operatorP <|> Parser Left
+packetP = literalP <|> operatorP
 
 part1 :: BitArray -> Int
 part1 ba =
