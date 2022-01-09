@@ -2,12 +2,11 @@
 
 module Day16.Main where
 
-import Control.Applicative
-import Control.Arrow
-import Control.Monad
-import Data.Either
-import Data.Functor
-import Numeric
+import Control.Applicative (Alternative (empty, many, (<|>)))
+import Control.Arrow (Arrow (first))
+import Control.Monad (guard, replicateM)
+import Data.Either (isRight)
+import Numeric (readHex)
 
 type Bit = Bool
 
