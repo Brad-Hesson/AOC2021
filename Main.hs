@@ -7,6 +7,7 @@ import qualified Day14.Main as D14
 import qualified Day15.Main as D15
 import qualified Day16.Main as D16
 import qualified Day17.Main as D17
+import qualified Day18.Main as D18
 import qualified Day2.Main as D2
 import qualified Day3.Main as D3
 import qualified Day4.Main as D4
@@ -34,7 +35,8 @@ days =
     (D14.main, 14),
     (D15.main, 15),
     (D16.main, 16),
-    (D17.main, 17)
+    (D17.main, 17),
+    (D18.main, 18)
   ]
 
 main :: IO ()
