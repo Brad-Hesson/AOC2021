@@ -2,7 +2,7 @@ module Common where
 
 import Control.Arrow (Arrow ((&&&), (***)))
 import Data.Array (Array, bounds, elems)
-import Data.List (groupBy)
+import Data.List (groupBy, tails)
 import Data.Maybe (fromJust, isNothing)
 
 mapF :: [a -> b] -> a -> [b]
@@ -25,5 +25,8 @@ chop n l = take n l : chop n (drop n l)
 
 print2DArray :: Show a => Array (Int, Int) a -> IO ()
 print2DArray mz =
-  let width = (+1) . uncurry (-) . (snd . snd &&& snd . fst) . bounds $ mz
+  let width = (+ 1) . uncurry (-) . (snd . snd &&& snd . fst) . bounds $ mz
    in putStrLn . unlines . map concat . chop width . map show . elems $ mz
+
+pairs :: [a] -> [(a, a)]
+pairs l = [(head a, b) | a <- init $ tails l, b <- tail a]
