@@ -31,8 +31,10 @@ instance Show Transform where
 coordsFromFile :: FilePath -> IO [Scan]
 coordsFromFile =
   return
-    . map (map (read . ("[" ++) . (++ "]")) . filter (/= ""))
-    . splitBy (isPrefixOf "---")
+    . map (map read)
+    . splitBy (isPrefixOf "[---")
+    . map (\s -> "[" ++ s ++ "]")
+    . filter (/= "")
     . lines
     <=< readFile
 
@@ -56,13 +58,12 @@ transforms =
 findTransforms :: [[Pos]] -> [Transform]
 findTransforms [[a, b], [c, d]] =
   let tcPairs p = zip (cycle transforms) . map (zipWith (-) p) $ mapF transforms c ++ mapF transforms d
-   in map (\(t, c) -> zipWith (+) c . t) $ intersect (tcPairs a) (tcPairs b)
+   in map (\(t, c) -> zipWith (+) c . t) $ intersectBy (\(_, c1) (_, c2) -> c1 == c2) (tcPairs a) (tcPairs b)
 findTransforms _ = undefined
 
 transformFromScans :: Scan -> Scan -> Maybe Transform
 transformFromScans s1 s2 =
   let possibles = map findTransforms $ pointSetFromDistMaps (distMapFromScan s1) (distMapFromScan s2)
-      collect [] = Nothing
       collect l
         | length l >= 12 = listToMaybe . foldl1 intersect $ l
         | otherwise = Nothing
