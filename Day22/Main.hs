@@ -65,17 +65,18 @@ rangeSplitter (Range rl1 rh1) (Range rl2 rh2) = case (rl1 == rl2, rh1 == rh2) of
   (True, True) -> []
 
 subtractCube :: Cube -> Cube -> [Cube]
-subtractCube cube@(Cube rx ry rz) cutter = case cubeIntersection cube cutter of
+subtractCube cutter cube@(Cube rx ry rz) = case cubeIntersection cube cutter of
   Nothing -> [cube]
   Just interCube@(Cube irx iry irz) ->
-    let cuts = concat . zipWith map [splitCubeX, splitCubeY, splitCubeZ] . map (uncurry rangeSplitter) $ [(irx, rx), (iry, ry), (irz, rz)]
+    let splitlist = map (uncurry rangeSplitter) [(irx, rx), (iry, ry), (irz, rz)]
+        cuts = concat $ zipWith map [splitCubeX, splitCubeY, splitCubeZ] splitlist
      in filter (/= interCube) $ foldr concatMap [cube] cuts
 
 applyRBStep :: Region -> RBStep -> Region
 applyRBStep (Region cubes) RBStep {getToggle = toggleOn, getCube = newCube} =
   if toggleOn
-    then Region $ cubes ++ foldl (\ncs c -> concatMap (`subtractCube` c) ncs) [newCube] cubes
-    else Region $ concatMap (`subtractCube` newCube) cubes
+    then Region $ cubes ++ foldr (concatMap . subtractCube) [newCube] cubes
+    else Region $ concatMap (subtractCube newCube) cubes
 
 part1 :: [RBStep] -> Int
 part1 rbs =
