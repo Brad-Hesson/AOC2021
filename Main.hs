@@ -21,40 +21,42 @@ import qualified Day7.Main as D7
 import qualified Day8.Main as D8
 import qualified Day9.Main as D9
 
-days :: [(IO (), Integer)]
+days :: [IO ()]
 days =
-  [ (D1.main, 1),
-    (D2.main, 2),
-    (D3.main, 3),
-    (D4.main, 4),
-    (D5.main, 5),
-    (D6.main, 6),
-    (D7.main, 7),
-    (D8.main, 8),
-    (D9.main, 9),
-    (D10.main, 10),
-    (D11.main, 11),
-    (D12.main, 12),
-    (D13.main, 13),
-    (D14.main, 14),
-    (D15.main, 15),
-    (D16.main, 16),
-    (D17.main, 17),
-    (D18.main, 18),
-    (D19.main, 19),
-    (D20.main, 20),
-    (D21.main, 21),
-    (D22.main, 22)
+  [ D1.main,
+    D2.main,
+    D3.main,
+    D4.main,
+    D5.main,
+    D6.main,
+    D7.main,
+    D8.main,
+    D9.main,
+    D10.main,
+    D11.main,
+    D12.main,
+    D13.main,
+    D14.main,
+    D15.main,
+    D16.main,
+    D17.main,
+    D18.main,
+    D19.main,
+    D20.main,
+    D21.main,
+    D22.main
   ]
 
 main :: IO ()
 main =
   mapM_
-    ( \(f, n) -> do
+    ( \(n, f) -> do
         putStr "[ Day "
         putStr . show $ n
         putStrLn " ]"
         f
         putStrLn ""
     )
-    days
+    $ zip
+      [1 ..]
+      days
